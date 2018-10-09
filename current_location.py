@@ -185,12 +185,22 @@ class CurrentLocation:
 
     def run(self):
         """Run method that performs all the real work"""
+        # create layer
+        vl = QgsVectorLayer("Point", "temporary_points", "memory")
+        pr = vl.dataProvider()
+        vl.startEditing()
+        pr.addAttributes( [ QgsField("date", QVariant.DateTime) ] )
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(36.5,-0.43)))
+        pr.addFeatures( [ feature ] )
+        vl.commitChanges()
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
+            QgsProject.instance().addMapLayer(vl)
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
